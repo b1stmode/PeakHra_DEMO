@@ -8,6 +8,13 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D playerRigidbody;
 
     private float movementSpeed = 5f;
+    private float jumpForce = 7f;
+
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float groundCheckRadius = 0.15f;
+
+    private bool isGrounded;
 
 
 
@@ -15,16 +22,14 @@ public class PlayerMovement : MonoBehaviour
     {
         playerRigidbody = GetComponent<Rigidbody2D>();
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void FixedUpdate()
@@ -33,11 +38,35 @@ public class PlayerMovement : MonoBehaviour
             moveInput.x * movementSpeed,
             playerRigidbody.linearVelocity.y
         );
+
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer) != null;
     }
 
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
-        
+
+    }
+
+    public void OnJump(InputValue value)
+    {
+        if (value.isPressed && isGrounded)
+        {
+            playerRigidbody.linearVelocity = new Vector2(
+                playerRigidbody.linearVelocity.x,
+                jumpForce
+            );
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck == null)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
     }
 }
