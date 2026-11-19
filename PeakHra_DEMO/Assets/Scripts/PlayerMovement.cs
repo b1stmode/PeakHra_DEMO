@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D playerRigidbody;
 
     private float movementSpeed = 5f;
-    private float jumpForce = 7f;
+    public float jumpForce = 7f;
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
@@ -55,6 +55,14 @@ public class PlayerMovement : MonoBehaviour
             playerRigidbody.linearVelocity = new Vector2(
                 playerRigidbody.linearVelocity.x,
                 jumpForce
+            );
+        }
+        // Shorten the jump when Space is released
+        if (!value.isPressed && playerRigidbody.linearVelocity.y > 0)
+        {
+            playerRigidbody.linearVelocity = new Vector2(
+                playerRigidbody.linearVelocity.x,
+                playerRigidbody.linearVelocity.y * 0.7f
             );
         }
     }
